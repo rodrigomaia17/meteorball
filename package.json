@@ -11,7 +11,7 @@
     "start": "node app.js",
     "test": "$(npm bin)/mocha",
     "posttest": "npm run lint -s",
-    "lint": "$(npm bin)/jshint . && $(npm bin)/jscs client/js",
+    "lint": "$(npm bin)/jshint . && $(npm bin)/jscs client/js && echo 'lint ok'",
     "clean": "rimraf public/*",
     "prebuild": "npm run clean -s && ncp client/other/ public/ && ncp client/js/vendors/ public/vendors",
     "build": "npm run -s build:js  && npm run -s build:css && npm run build:html -s ",
