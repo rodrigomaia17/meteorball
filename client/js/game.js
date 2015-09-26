@@ -20,9 +20,11 @@ function create() {
   game.physics.arcade.enable(ball);
 
   //Player physics properties. Give the little guy a slight bounce.
-  player.body.bounce.y = 2;
+  player.body.bounce.y = 0.5;
+  player.body.bounce.x = 0.5;
   player.body.collideWorldBounds = true;
-  ball.body.bounce.y = 2;
+  ball.body.bounce.y = 0.5;
+  ball.body.bounce.x = 0.5;
   ball.body.collideWorldBounds = true;
 
   cursors = game.input.keyboard.createCursorKeys();
