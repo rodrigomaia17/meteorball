@@ -2,10 +2,8 @@ doctype html
 html(lang="en")
   head
     title= pageTitle
-    script(type='text/javascript').
-      if (foo) {
-         bar(1 + 5)
-      }
+    script(src='vendors/phaser.min.js')
+    script(src='game.js')
   body
     h1 Jade - node template engine
     #container.col
@@ -18,3 +16,4 @@ html(lang="en")
         templating language with a
         strong focus on performance
         and powerful features.
+    #game
