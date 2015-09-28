@@ -2,8 +2,10 @@ doctype html
 html(lang="en")
   head
     title= pageTitle
-    script(src='vendors/phaser.min.js')
+    script(src='vendors.js')
     script(src='game.js')
+    script(type='text/javascript').
+      var socket = io();
   body
     h1 Jade - node template engine
     #container.col
