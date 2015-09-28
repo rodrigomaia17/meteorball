@@ -1,3 +1,5 @@
+var socket = io();
+
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
 var player;
@@ -41,6 +43,18 @@ function create() {
     left: game.input.keyboard.addKey(Phaser.Keyboard.A),
     right: game.input.keyboard.addKey(Phaser.Keyboard.D),
   };
+
+  socket.on('update ui', function(data) {
+    var infos = JSON.parse(data);
+    console.log(data);
+    ball.x = infos.ball.x;
+    ball.y = infos.ball.y;
+    player.x = infos.players[1].x;
+    player.y = infos.players[1].y;
+    player2.x = infos.players[0].x;
+    player2.y = infos.players[0].y;
+
+  });
 }
 
 function update() {
@@ -48,6 +62,33 @@ function update() {
   game.physics.arcade.collide(objects, objects);
 
   movePlayers();
+
+  var json = createJson();
+  sendJson(json);
+
+}
+
+function sendJson(json) {
+  socket.emit('update positions', json);
+}
+
+function createJson() {
+  var data = {
+    players: [{
+        player: 1,
+        x: player.body.x,
+        y: player.body.y,
+      },
+      {
+        player: 2,
+        x: player.body.x,
+        y: player.body.y,
+      },
+    ],
+    ball: { x: ball.body.x, y: ball.body.y },
+  };
+
+  return JSON.stringify(data);
 }
 
 function movePlayers() {
@@ -80,4 +121,5 @@ function movePlayers() {
   }else if (wasd.up.isDown) {
     player2.body.velocity.y = -150;
   }
+
 }

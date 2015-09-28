@@ -6,6 +6,11 @@ var port = 3000;
 
 io.on('connection', function(socket){
     console.log('a user connected');
+    
+    socket.on('update positions', function(data){
+      console.log('recebi');
+      socket.broadcast.emit('update ui', data);
+    });
 });
 
 app.use(express.static('public'));
