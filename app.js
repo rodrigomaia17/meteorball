@@ -4,8 +4,14 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = 3000;
 
+var players = [];
+
 io.on('connection', function(socket){
-    console.log('a user connected');
+
+    socket.on('register myself', function(data){
+      console.log('a user connected with id '+data);
+      players.push(data);
+    });
     
     socket.on('update positions', function(data){
       socket.broadcast.emit('update ui', data);

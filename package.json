@@ -11,6 +11,7 @@
     "jshint": "^2.8.0",
     "mocha": "^2.3.3",
     "ncp": "^2.0.0",
+    "node-uuid": "^1.4.3",
     "parallelshell": "^2.0.0",
     "phaser": "latest",
     "rimraf": "^2.4.3",

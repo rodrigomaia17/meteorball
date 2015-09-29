@@ -1,4 +1,7 @@
 var socket = io();
+var myId = uuid.v4();
+
+//socket.emit('register myself', myId);
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'game', { preload: preload, create: create, update: update });
 
@@ -7,23 +10,29 @@ var ball;
 var cursors;
 var objects;
 var wasd;
+
+var players = [];
+
+//criar o array de players
+
 function preload() {
+  game.stage.disableVisibilityChange = true;
+  game.time.desiredFPS = 30;
   game.load.image('player', 'cruzeiro.png');
   game.load.image('ball', 'ball.png');
-  game.load.image('player2', 'galaum.png');
 }
 
 function create() {
+
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
   objects = game.add.group();
-  objects.enableBody = true;
 
   player = objects.create(0, 0, 'player');
-  player2 = objects.create(100, 200, 'player2');
-  player2.scale.setTo(0.5, 0.5);
   ball = objects.create(400, 300, 'ball');
   ball.scale.setTo(0.2, 0.2);
+
+  objects.enableBody = true;
 
   //  We need to enable physics on the player
   game.physics.arcade.enable(objects);
@@ -37,23 +46,27 @@ function create() {
 
   cursors = game.input.keyboard.createCursorKeys();
 
-  wasd = {
-    up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-    down: game.input.keyboard.addKey(Phaser.Keyboard.S),
-    left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-    right: game.input.keyboard.addKey(Phaser.Keyboard.D),
-  };
-
   socket.on('update ui', function(data) {
-    var infos = JSON.parse(data);
-    console.log(data);
-    ball.x = infos.ball.x;
-    ball.y = infos.ball.y;
-    player.x = infos.players[1].x;
-    player.y = infos.players[1].y;
-    player2.x = infos.players[0].x;
-    player2.y = infos.players[0].y;
+    var info = JSON.parse(data);
 
+    var playerUpdated = players.find(function(p) { return p.id == info.id; });
+
+    if (playerUpdated !== undefined) {
+      console.log('criei um novo');
+      var pa = playerUpdated;
+      pa.x = info.x;
+      pa.y = info.y;
+    }else {
+      console.log('usei o novo');
+      var p = objects.create(0, 0, 'player');
+      objects.enableBody = true;
+      game.physics.arcade.enable(p);
+      p.body.bounce.y = 0.5;
+      p.body.bounce.x = 0.5;
+      p.body.collideWorldBounds = true;
+      p.id = info.id;
+      players.push(p);
+    }
   });
 }
 
@@ -74,29 +87,17 @@ function sendJson(json) {
 
 function createJson() {
   var data = {
-    players: [{
-        player: 1,
-        x: player.body.x,
-        y: player.body.y,
-      },
-      {
-        player: 2,
-        x: player.body.x,
-        y: player.body.y,
-      },
-    ],
-    ball: { x: ball.body.x, y: ball.body.y },
+    id: myId,
+    x: player.x,
+    y: player.y,
   };
 
   return JSON.stringify(data);
 }
 
 function movePlayers() {
-  //  Reset the players velocity (movement)
-  objects.children.forEach(function(child) {
-    child.body.velocity.x = 0;
-    child.body.velocity.y = 0;
-  });
+  player.body.velocity.x -= 0;
+  player.body.velocity.y -= 0;
 
   if (cursors.left.isDown) {
     player.body.velocity.x = -150;
@@ -108,18 +109,6 @@ function movePlayers() {
     player.body.velocity.y = 150;
   }else if (cursors.up.isDown) {
     player.body.velocity.y = -150;
-  }
-
-  if (wasd.left.isDown) {
-    player2.body.velocity.x = -150;
-  } else if (wasd.right.isDown) {
-    player2.body.velocity.x = 150;
-  }
-
-  if (wasd.down.isDown) {
-    player2.body.velocity.y = 150;
-  }else if (wasd.up.isDown) {
-    player2.body.velocity.y = -150;
   }
 
 }
