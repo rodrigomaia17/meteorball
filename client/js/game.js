@@ -16,13 +16,13 @@ var players = [];
 //criar o array de players
 
 function preload() {
-  game.stage.disableVisibilityChange = true;
-  game.time.desiredFPS = 30;
   game.load.image('player', 'cruzeiro.png');
   game.load.image('ball', 'ball.png');
 }
 
 function create() {
+  game.stage.disableVisibilityChange = true;
+  game.time.desiredFPS = 30;
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -56,6 +56,8 @@ function create() {
       var pa = playerUpdated;
       pa.x = info.x;
       pa.y = info.y;
+      pa.body.velocity.x = info.velocityX;
+      pa.body.velocity.y = info.velocityY;
     }else {
       console.log('usei o novo');
       var p = objects.create(0, 0, 'player');
@@ -73,11 +75,20 @@ function create() {
 function update() {
   //  Collide the player and the stars with the platforms
   game.physics.arcade.collide(objects, objects);
+  player.body.velocity.x -= 0;
+  player.body.velocity.y -= 0;
 
-  movePlayers();
+  var changed = false;
 
-  var json = createJson();
-  sendJson(json);
+  if (cursors.left.isDown || cursors.right.isDown || cursors.up.isDown || cursors.down.isDown)
+    changed = true;
+
+  if (changed) {
+    movePlayers();
+
+    var json = createJson();
+    sendJson(json);
+  }
 
 }
 
@@ -90,14 +101,14 @@ function createJson() {
     id: myId,
     x: player.x,
     y: player.y,
+    velocityX: player.body.velocity.x,
+    velocityY: player.body.velocity.y,
   };
 
   return JSON.stringify(data);
 }
 
 function movePlayers() {
-  player.body.velocity.x -= 0;
-  player.body.velocity.y -= 0;
 
   if (cursors.left.isDown) {
     player.body.velocity.x = -150;
