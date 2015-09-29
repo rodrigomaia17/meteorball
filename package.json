@@ -36,8 +36,8 @@
     "watch:js": "watch 'npm run build:js' client/js/ server/ test/",
     "build:html": "$(npm bin)/jade client/html -o public",
     "watch:html": "watch 'npm run build:html' client/html",
-    "live-reload": "$(npm bin)/livereload public/ --port 9091",
-    "dev": " parallelshell 'npm start' 'npm run watch -s'"
+    "live-reload": "$(npm bin)/livereload public/ ",
+    "dev": " $(npm bin)/parallelshell 'npm start' 'npm run live-reload' 'npm run watch -s'"
   },
   "repository": {
     "type": "git",
@@ -48,5 +48,8 @@
   "bugs": {
     "url": "https://github.com/rodrigomaia17/meteorball/issues"
   },
-  "homepage": "https://github.com/rodrigomaia17/meteorball#readme"
+  "homepage": "https://github.com/rodrigomaia17/meteorball#readme",
+  "devDependencies": {
+    "livereload": "^0.3.7"
+  }
 }
